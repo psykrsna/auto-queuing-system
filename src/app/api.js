@@ -6,8 +6,17 @@ var schema = buildSchema(`
     customer: Int!
   }
 
+  type Request{
+    id: Int!
+    customer: Int!
+    createdAt: String!
+    status: Int!
+    driver: Int
+  }
+
   type Query {
     test: String!
+    requests: [Request]
   }
 
   type Mutation {
@@ -18,7 +27,7 @@ var schema = buildSchema(`
 var root = {
 
   test: () => {
-    let sql = "select 'Hello World!' as test;";
+    let sql = "select 'Hello World!' as test";
     return db.query(sql).then( result => {
       return result[0][0].test;
     })
@@ -27,11 +36,21 @@ var root = {
     })
   },
 
-  createRequest: (data, request) => {
+  createRequest: (data) => {
     let customerId = db.escape(data.input.customer);
-    let sql = "INSERT INTO request (customerId) VALUES ("+customerId+");";
+    let sql = "INSERT INTO request (customer) VALUES ("+customerId+")";
     return db.query(sql).then( result => {
       return true;
+    })
+    .catch( error => {
+      console.log(error);
+    })
+  },
+
+  requests: () => {
+    let sql = "SELECT * FROM request ORDER BY id DESC";
+    return db.query(sql).then( result => {
+      return result[0];
     })
     .catch( error => {
       console.log(error);

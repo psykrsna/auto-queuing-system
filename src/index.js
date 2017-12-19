@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom';
 import './app.css';
 import Customer from './Customer';
+import Dashboard from './Dashboard';
 import config from './config';
 
 if(config.DEBUG){
@@ -19,7 +20,10 @@ class Routes extends React.Component{
   render() {
     return (
       <Router>
-          <Route exact path="/customerapp" component={Customer} />
+        <div class="pseudo-root">
+          <Route exact path="/customer" component={Customer} />
+          <Route exact path="/dashboard" component={Dashboard} />
+        </div>
       </Router>
     );
   }
