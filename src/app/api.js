@@ -57,6 +57,8 @@ var root = {
   },
 
   requests: (data) => {
+
+    // adds filters to the API - status & driver
     let whereClause = '';
     if(data){
       if(data.status !== undefined){
@@ -72,6 +74,7 @@ var root = {
         whereClause += 'driver='+db.escape(data.driver);
       }
     }
+
     let sql = "SELECT * FROM request "+whereClause+" ORDER BY id DESC";
 
     return db.query(sql).then( result => {
@@ -83,12 +86,17 @@ var root = {
   },
 
   selectRequest: (data) => {
+    // updates any requests that should be completed but might have been missed by cron
     return sync().then( result => {
+
       let sql1 = 'select count(*) as count from request where status=1 and driver='+data.input.driver;
       return db.query(sql1).then( result => {
+
+        // checks if driver is free
         if(result[0][0].count === 0){
 
-          let sql2 = "UPDATE request SET status=1, driver="+data.input.driver+", selectedAt=NOW() where id="+data.input.id;
+          // allots driver to request if request is not allotted to anyone
+          let sql2 = "UPDATE request SET status=1, driver="+data.input.driver+", selectedAt=NOW() where status=0 and id="+data.input.id;
           return db.query(sql2).then( result => {
             return true;
           })
