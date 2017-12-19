@@ -1,3 +1,5 @@
+// Run using Heroku Scheduler
+
 var { sync } = require('./sync');
 
 sync().then(response => {

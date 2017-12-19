@@ -1,3 +1,5 @@
+// Setups connection with the MySQL database
+
 var Sequelize = require("sequelize");
 var DB_PARAMS = {
   "logging" : false,
