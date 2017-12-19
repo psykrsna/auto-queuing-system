@@ -25,7 +25,7 @@ class Driver extends Component {
     var comp = this;
     var apiRoot = localStorage.getItem('apiRoot');
     var data = {
-        query: "query ($driver: Int!) { \n waiting: requests(status: 0) { id customer createdAt status driver } \n ongoing: requests(status: 1, driver: $driver) { id customer createdAt status driver } \n complete: requests(status: 2, driver: $driver) { id customer createdAt status driver } \n }",
+        query: "query ($driver: Int!) { \n waiting: requests(status: 0) { id customer createdAt status driver } \n ongoing: requests(status: 1, driver: $driver) { id customer createdAt selectedAt status driver } \n complete: requests(status: 2, driver: $driver) { id customer createdAt selectedAt completedAt status driver } \n }",
         variables: {
           driver: this.state.driver
         }
@@ -69,8 +69,11 @@ class Driver extends Component {
         comp.getRides();
         alert('Ride successfully selected!');
       }
+      else{
+        alert('Cannot select ride as you are already allotted!');
+      }
     }).catch( error => {
-      alert('There was an error retrieving the requests.');
+      alert('There was an error selecting the ride.');
       console.log(error);
     });
   }
@@ -89,17 +92,17 @@ class Driver extends Component {
     else if( request.status === config.STATUS.ONGOING ){
       bottomContent = (
         <div>
-          <div>Request: 15 mins ago</div>
-          <div>Picked up: 3 mins ago</div>
+          <div>Request: {timeDuration(request.createdAt)} ago</div>
+          <div>Picked up: {timeDuration(request.selectedAt)} ago</div>
         </div>
       );
     }
     else if( request.status === config.STATUS.COMPLETE ){
       bottomContent = (
         <div>
-          <div>Request: 15 mins ago</div>
-          <div>Picked up: 3 mins ago</div>
-          <div>Completed: 0 mins ago</div>
+          <div>Request: {timeDuration(request.createdAt)} ago</div>
+          <div>Picked up: {timeDuration(request.selectedAt)} ago</div>
+          <div>Completed: {timeDuration(request.completedAt)} ago</div>
         </div>
       );
     }

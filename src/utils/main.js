@@ -10,10 +10,15 @@ export function timeDuration(time){
   let seconds = duration.seconds();
   let timeSince = '';
   if(parseInt(hours, 10) < 1){
-    timeSince = minutes+' min '+seconds+' sec';
+    if(parseInt(minutes, 10) < 5){
+      timeSince = minutes+' min '+seconds+' sec';
+    }
+    else{
+      timeSince = minutes+' min';
+    }
   }
   else if(parseInt(hours, 10) < 24){
-    timeSince = hours+' hr '+minutes+' min';
+    timeSince = hours+' hr';
   }
   else{
     timeSince = days+' days ';

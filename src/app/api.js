@@ -1,5 +1,6 @@
 var { graphql, buildSchema } = require('graphql');
 var db = require('../db');
+var { sync } = require('../sync');
 
 var schema = buildSchema(`
   input RequestInput{
@@ -15,6 +16,8 @@ var schema = buildSchema(`
     id: Int!
     customer: Int!
     createdAt: String!
+    selectedAt: String
+    completedAt: String
     status: Int!
     driver: Int
   }
@@ -80,15 +83,26 @@ var root = {
   },
 
   selectRequest: (data) => {
-    let sql = "UPDATE request SET status=1, driver="+data.input.driver+", selectedAt=NOW() where id="+data.input.id;
-    console.log(sql);
-    
-    return db.query(sql).then( result => {
-      return true;
-    })
-    .catch( error => {
-      console.log(error);
-    })
+    return sync().then( result => {
+      let sql1 = 'select count(*) as count from request where status=1 and driver='+data.input.driver;
+      return db.query(sql1).then( result => {
+        if(result[0][0].count === 0){
+
+          let sql2 = "UPDATE request SET status=1, driver="+data.input.driver+", selectedAt=NOW() where id="+data.input.id;
+          return db.query(sql2).then( result => {
+            return true;
+          })
+          .catch( error => {
+            console.log(error);
+          })
+
+        }
+        else{
+          // already has a ride assigned
+          return false;
+        }
+      });
+    });
   },
 
 };

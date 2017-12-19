@@ -32,7 +32,7 @@ class Customer extends Component {
       data: data
     }).then( response => {
       if(response.data.data.createRequest === true){
-        alert('Request successfully received. A ride will be allotted to you shortly!');
+        alert('Request successfully received. A ride will be allotted shortly!');
         comp.setState({
           customer: ''
         });
