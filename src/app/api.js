@@ -1,6 +1,6 @@
 var { graphql, buildSchema } = require('graphql');
-var db = require('../db');
-var { sync } = require('../sync');
+var db = require('./db');
+var { sync } = require('./sync');
 
 var schema = buildSchema(`
   input RequestInput{

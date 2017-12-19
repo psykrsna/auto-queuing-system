@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
+
+// initializing socket
 const socketRoot = localStorage.getItem('apiRoot');
 const socket = io(socketRoot);
 
@@ -18,6 +20,7 @@ class Customer extends Component {
     this.setState({ customer: event.target.value });
   }
 
+  // makes API call and creates a new request
   submitRequest = () => {
     var comp = this;
     var apiRoot = localStorage.getItem('apiRoot');
@@ -46,7 +49,6 @@ class Customer extends Component {
       alert('There was an error submitting the request');
       console.log(error);
     });
-
   }
 
   render() {
@@ -57,7 +59,7 @@ class Customer extends Component {
         </div>
         <div>  
           <label> 
-            Customer ID: 
+            Customer ID:&nbsp;
             <input 
               type="number" 
               value={this.state.customer} 

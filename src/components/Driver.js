@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import config from './config';
-import { timeDuration } from './utils/main';
+import config from '../config';
+import { timeDuration } from '../utils/main';
 import io from 'socket.io-client';
+
+// initializing socket
 const socketRoot = localStorage.getItem('apiRoot');
 const socket = io(socketRoot);
 
@@ -24,14 +26,18 @@ class Driver extends Component {
   componentDidMount = () =>{
     let comp = this;
     this.getRides();
+    // reloads list of requests if there's new data
     socket.on('RELOAD', (data) => {
       comp.getRides();
 		});
   }
 
+  // makes API call to get list of rides
   getRides = () => {
     var comp = this;
     var apiRoot = localStorage.getItem('apiRoot');
+
+    // GraphQL allows us to get all the 3 lists - waiting, ongoing and complete together
     var data = {
         query: "query ($driver: Int!) { \n waiting: requests(status: 0) { id customer createdAt status driver } \n ongoing: requests(status: 1, driver: $driver) { id customer createdAt selectedAt status driver } \n complete: requests(status: 2, driver: $driver) { id customer createdAt selectedAt completedAt status driver } \n }",
         variables: {
@@ -55,6 +61,7 @@ class Driver extends Component {
     });
   }
 
+  // makes API call and allots request to driver if available
   selectRide = (requestId) => {
     var comp = this;
     var apiRoot = localStorage.getItem('apiRoot');
@@ -87,7 +94,8 @@ class Driver extends Component {
     });
   }
 
-  getItem = (request) => {
+  // constructs relevant HTML for every request
+  createItem = (request) => {
     let bottomContent = null;
     if(request.status === config.STATUS.WAITING){
       bottomContent = (
@@ -125,25 +133,24 @@ class Driver extends Component {
   }
 
   render() {
-    let waitingRequests = [];
-    let ongoingRequests = [];
-    let completeRequests = [];
+    let [ waitingRequests, ongoingRequests, completeRequests ] = [ [], [], [] ];
     for(let request of this.state.requestsWaiting){
-      waitingRequests.push( this.getItem(request) );
+      waitingRequests.push( this.createItem(request) );
     }
     for(let request of this.state.requestsOngoing){
-      ongoingRequests.push( this.getItem(request) );
+      ongoingRequests.push( this.createItem(request) );
     }
     for(let request of this.state.requestsComplete){
-      completeRequests.push( this.getItem(request) );
+      completeRequests.push( this.createItem(request) );
     }
 
     return (
       <div className="driver-app">
         <div>
           <h1>Driver App</h1>
-          <div>
+          <div> 
           <table>
+
             <thead>
             <tr>
               <th>Waiting</th>
@@ -159,6 +166,7 @@ class Driver extends Component {
               <td>{completeRequests}</td>
             </tr>
             </tbody>
+
           </table>
           </div>
         </div>

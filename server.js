@@ -23,15 +23,11 @@ app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
+// Setting up socket.io
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-// Serve
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-});
-
+// Programming socket.io triggers for live reloading
 io.on('connection', function (socket) {
   socket.on('NEW REQUEST', function (data) {
     io.emit('RELOAD', {load: true});
@@ -39,5 +35,11 @@ io.on('connection', function (socket) {
   socket.on('SELECTED RIDE', function (data) {
     io.emit('RELOAD', {load: true});
   });
+});
+
+// Serve
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
 });
    

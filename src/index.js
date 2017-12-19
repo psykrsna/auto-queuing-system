@@ -5,10 +5,11 @@ import {
   Route
 } from 'react-router-dom';
 import './css/app.css';
-import Customer from './Customer';
-import Dashboard from './Dashboard';
-import Driver from './Driver';
+import Customer from './components/Customer';
+import Dashboard from './components/Dashboard';
+import Driver from './components/Driver';
 import config from './config';
+
 
 if(config.DEBUG){
   localStorage.setItem('apiRoot', 'http://localhost:5000');
@@ -16,6 +17,7 @@ if(config.DEBUG){
 else{
   localStorage.setItem('apiRoot', 'http://auto-q.herokuapp.com');
 }
+
 
 class Routes extends React.Component{
   render() {

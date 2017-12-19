@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import config from './config';
-import { timeDuration } from './utils/main';
+import config from '../config';
+import { timeDuration } from '../utils/main';
 import io from 'socket.io-client';
+
+// initializing socket
 const socketRoot = localStorage.getItem('apiRoot');
 const socket = io(socketRoot);
 
@@ -19,11 +21,13 @@ class Dashboard extends Component {
   componentDidMount = () =>{
     let comp = this;
     this.getRides();
+    // reloads list of requests if there's new data
     socket.on('RELOAD', (data) => {
       comp.getRides();
 		});
   }
 
+  // makes API call to get current list of requests
   getRides = () => {
     var comp = this;
     var apiRoot = localStorage.getItem('apiRoot');
@@ -45,10 +49,7 @@ class Dashboard extends Component {
     });
   }
 
-  timeSince = (duration) => {
-    
-  }
-
+  // converts status integer to relevant human friendly text
   getStatusText = (status) => {
     if(status === config.STATUS.WAITING){
       return 'Waiting';
