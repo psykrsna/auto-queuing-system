@@ -6,6 +6,11 @@ var schema = buildSchema(`
     customer: Int!
   }
 
+  input SelectInput{
+    id: Int!
+    driver: Int!
+  }
+
   type Request{
     id: Int!
     customer: Int!
@@ -21,7 +26,8 @@ var schema = buildSchema(`
 
   type Mutation {
     createRequest(input: RequestInput): Boolean
-}
+    selectRequest(input: SelectInput): Boolean
+  }
 `);
 
 var root = {
@@ -71,7 +77,19 @@ var root = {
     .catch( error => {
       console.log(error);
     })
-  }
+  },
+
+  selectRequest: (data) => {
+    let sql = "UPDATE request SET status=1, driver="+data.input.driver+", selectedAt=NOW() where id="+data.input.id;
+    console.log(sql);
+    
+    return db.query(sql).then( result => {
+      return true;
+    })
+    .catch( error => {
+      console.log(error);
+    })
+  },
 
 };
 

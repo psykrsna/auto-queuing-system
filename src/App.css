@@ -6,4 +6,5 @@ div{
 }
 table td{
   padding-right: 30px;
+  vertical-align: top;
 }

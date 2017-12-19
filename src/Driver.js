@@ -7,10 +7,13 @@ class Driver extends Component {
 
   constructor(props){
     super(props);
+    const params = new URLSearchParams(props.location.search); 
+    const driver = params.get('id');
     this.state = {
       requestsWaiting: [],
       requestsOngoing: [],
-      requestsComplete: []
+      requestsComplete: [],
+      driver: driver
     };
   }
 
@@ -24,7 +27,7 @@ class Driver extends Component {
     var data = {
         query: "query ($driver: Int!) { \n waiting: requests(status: 0) { id customer createdAt status driver } \n ongoing: requests(status: 1, driver: $driver) { id customer createdAt status driver } \n complete: requests(status: 2, driver: $driver) { id customer createdAt status driver } \n }",
         variables: {
-          driver: 1
+          driver: this.state.driver
         }
     };
 
@@ -44,6 +47,34 @@ class Driver extends Component {
     });
   }
 
+  selectRide = (requestId) => {
+    var comp = this;
+    var apiRoot = localStorage.getItem('apiRoot');
+    var data = {
+        query: "mutation selectRequest($input: SelectInput) { \n selectRequest(input: $input) \n }",
+        variables: {
+          input: {
+            driver: this.state.driver,
+            id: requestId
+          }
+        }
+    };
+
+    axios({
+      method: 'post',
+      url: apiRoot+'/api',
+      data: data
+    }).then( response => {
+      if(response.data.data.selectRequest){
+        comp.getRides();
+        alert('Ride successfully selected!');
+      }
+    }).catch( error => {
+      alert('There was an error retrieving the requests.');
+      console.log(error);
+    });
+  }
+
   getItem = (request) => {
     let bottomContent = null;
     console.log(request.status === config.STATUS.WAITING);
@@ -51,7 +82,7 @@ class Driver extends Component {
       bottomContent = (
         <div>
           <div>{timeDuration(request.createdAt)} ago</div>
-          <div><button>Select</button></div>
+          <div><button onClick={ () => this.selectRide(request.id) }>Select</button></div>
         </div>
       );
     }
