@@ -7,6 +7,7 @@ import {
 import './app.css';
 import Customer from './Customer';
 import Dashboard from './Dashboard';
+import Driver from './Driver';
 import config from './config';
 
 if(config.DEBUG){
@@ -20,9 +21,10 @@ class Routes extends React.Component{
   render() {
     return (
       <Router>
-        <div class="pseudo-root">
+        <div className="pseudo-root">
           <Route exact path="/customer" component={Customer} />
           <Route exact path="/dashboard" component={Dashboard} />
+          <Route exact path="/driver" component={Driver} />
         </div>
       </Router>
     );

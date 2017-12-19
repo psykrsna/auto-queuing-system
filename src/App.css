@@ -4,6 +4,6 @@ div{
   justify-content: center;
   flex-flow: column;
 }
-.dashboard th{
-  padding-right: 20px;
+table td{
+  padding-right: 30px;
 }

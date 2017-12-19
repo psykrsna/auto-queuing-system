@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import moment from 'moment';
 import config from './config';
-
+import { timeDuration } from './utils/main';
 
 class Dashboard extends Component {
 
@@ -39,21 +38,7 @@ class Dashboard extends Component {
   }
 
   timeSince = (duration) => {
-    let minutes = duration.minutes();
-    let hours = duration.hours();
-    let days = duration.days();
-    let seconds = duration.seconds();
-    let timeSince = '';
-    if(parseInt(hours, 10) < 1){
-      timeSince = minutes+' min '+seconds+' sec';
-    }
-    else if(parseInt(hours, 10) < 24){
-      timeSince = hours+' hr '+minutes+' min';
-    }
-    else{
-      timeSince = days+' days ';
-    }
-    return timeSince;
+    
   }
 
   getStatusText = (status) => {
@@ -70,12 +55,9 @@ class Dashboard extends Component {
 
   render() {
     let RequestList = [];
-    let now = moment(new Date());
 
     for(var request of this.state.requests){
-      let start = moment(request.createdAt);
-      let duration = moment.duration(now.diff(start));
-      let timeSince = this.timeSince(duration);
+      let timeSince = timeDuration(request.createdAt);
       let status = this.getStatusText(request.status);
       let item = (
         <tr>
@@ -94,6 +76,7 @@ class Dashboard extends Component {
           <h1>Dashboard</h1>
           <div>
           <table>
+            <thead>
             <tr>
               <th>Request ID</th>
               <th>Customer ID</th>
@@ -101,7 +84,11 @@ class Dashboard extends Component {
               <th>Status</th>
               <th>Driver</th>
             </tr>
+            </thead>
+
+            <tbody>
             {RequestList}
+            </tbody>
           </table>
           </div>
         </div>

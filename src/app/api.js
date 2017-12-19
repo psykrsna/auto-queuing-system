@@ -50,7 +50,7 @@ var root = {
   requests: (data) => {
     let whereClause = '';
     if(data){
-      if(data.status){
+      if(data.status !== undefined){
         whereClause = 'WHERE status='+db.escape(data.status);
       } 
       if(data.driver){
