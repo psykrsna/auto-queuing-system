@@ -14,7 +14,7 @@ if(config.DEBUG){
   localStorage.setItem('apiRoot', 'http://localhost:5000');
 }
 else{
-  localStorage.setItem('apiRoot', 'http://server.herokuapp.com');
+  localStorage.setItem('apiRoot', 'http://auto-q.herokuapp.com');
 }
 
 class Routes extends React.Component{
