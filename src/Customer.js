@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import io from 'socket.io-client';
+const socketRoot = localStorage.getItem('apiRoot');
+const socket = io(socketRoot);
+
 
 class Customer extends Component {
 
@@ -36,6 +40,7 @@ class Customer extends Component {
         comp.setState({
           customer: ''
         });
+        socket.emit('NEW REQUEST', {load: true});
       }
     }).catch( error => {
       alert('There was an error submitting the request');

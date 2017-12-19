@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import config from './config';
 import { timeDuration } from './utils/main';
+import io from 'socket.io-client';
+const socketRoot = localStorage.getItem('apiRoot');
+const socket = io(socketRoot);
+
 
 class Driver extends Component {
 
@@ -18,7 +22,11 @@ class Driver extends Component {
   }
 
   componentDidMount = () =>{
+    let comp = this;
     this.getRides();
+    socket.on('RELOAD', (data) => {
+      comp.getRides();
+		});
   }
 
   getRides = () => {
@@ -66,6 +74,7 @@ class Driver extends Component {
       data: data
     }).then( response => {
       if(response.data.data.selectRequest){
+        socket.emit('SELECTED RIDE', {request: requestId});
         comp.getRides();
         alert('Ride successfully selected!');
       }
@@ -80,7 +89,6 @@ class Driver extends Component {
 
   getItem = (request) => {
     let bottomContent = null;
-    console.log(request.status === config.STATUS.WAITING);
     if(request.status === config.STATUS.WAITING){
       bottomContent = (
         <div>
@@ -131,7 +139,7 @@ class Driver extends Component {
     }
 
     return (
-      <div className="dashboard">
+      <div className="driver-app">
         <div>
           <h1>Driver App</h1>
           <div>

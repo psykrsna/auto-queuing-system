@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import config from './config';
 import { timeDuration } from './utils/main';
+import io from 'socket.io-client';
+const socketRoot = localStorage.getItem('apiRoot');
+const socket = io(socketRoot);
+
 
 class Dashboard extends Component {
 
@@ -13,7 +17,11 @@ class Dashboard extends Component {
   }
 
   componentDidMount = () =>{
+    let comp = this;
     this.getRides();
+    socket.on('RELOAD', (data) => {
+      comp.getRides();
+		});
   }
 
   getRides = () => {
