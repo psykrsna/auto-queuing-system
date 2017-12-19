@@ -16,7 +16,7 @@ var schema = buildSchema(`
 
   type Query {
     test: String!
-    requests: [Request]
+    requests(status: Int, driver: Int): [Request]
   }
 
   type Mutation {
@@ -47,8 +47,24 @@ var root = {
     })
   },
 
-  requests: () => {
-    let sql = "SELECT * FROM request ORDER BY id DESC";
+  requests: (data) => {
+    let whereClause = '';
+    if(data){
+      if(data.status){
+        whereClause = 'WHERE status='+db.escape(data.status);
+      } 
+      if(data.driver){
+        if(whereClause === ''){
+          whereClause = 'WHERE ';
+        }
+        else{
+          whereClause += ' AND ';
+        }
+        whereClause += 'driver='+db.escape(data.driver);
+      }
+    }
+    let sql = "SELECT * FROM request "+whereClause+" ORDER BY id DESC";
+
     return db.query(sql).then( result => {
       return result[0];
     })

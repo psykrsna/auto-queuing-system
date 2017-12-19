@@ -44,10 +44,10 @@ class Dashboard extends Component {
     let days = duration.days();
     let seconds = duration.seconds();
     let timeSince = '';
-    if(parseInt(hours) < 1){
+    if(parseInt(hours, 10) < 1){
       timeSince = minutes+' min '+seconds+' sec';
     }
-    else if(parseInt(hours) < 24){
+    else if(parseInt(hours, 10) < 24){
       timeSince = hours+' hr '+minutes+' min';
     }
     else{
